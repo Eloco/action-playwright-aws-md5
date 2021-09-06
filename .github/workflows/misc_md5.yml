@@ -52,7 +52,7 @@ jobs:
             mkdir $FILE_BASE
             export command="bash misc_script"
             $command || $command  #retry command twice 
-            sed -i '1i [GITHUB ACTION] <misc weather>' $FILE_PATH
+            sed -i '1i [GITHUB ACTION] <misc-aws-md5 weather.sh>' $FILE_PATH
             cat $FILE_PATH
         env:
             MATRIX_SCRIPT: ${{matrix.script}}
