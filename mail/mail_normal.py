@@ -34,10 +34,10 @@ for num in mailUtils.muti_decode(rml.getToday()[1][0]).split(' ')[-10:]:
         mailInfo = rml.getMailInfo(str(num))
         with open(f"download/{num}.txt","w") as f:
             msg=""
-            msg+=f"""<:mailbox:>[Github action] \t <{mail_user}>\n"""
-            msg+=f"""<subject>:\t{mailInfo['subject']}\n"""
-            msg+=f"""<from>:\t\t{" ".join(mailInfo['from'])}\n"""
-            msg+=f"""<to>:\t\t{  " ".join(mailInfo['to'  ])}\n"""
+            msg+=f""":mailbox: [Github action] \t <{mail_user}>\n"""
+            msg+=f"""[subject]:\t{mailInfo['subject']}\n"""
+            msg+=f"""[from]:\t\t{" ".join(mailInfo['from'])}\n"""
+            msg+=f"""[to]:\t\t{  " ".join(mailInfo['to'  ])}\n"""
             if type(mailInfo['body'])==str:
                 msg+="<keyword>:\t"
                 html_text=h.handle(mailInfo['body'])
