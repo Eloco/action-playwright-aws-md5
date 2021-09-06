@@ -23,4 +23,4 @@ jobs:
         dst: gitee/eloco
         dst_key:   ${{ secrets.GITEE_PRIVATE_KEY }}
         dst_token: ${{ secrets.GITEE_TOKEN       }}
-      #black_list: ""
+        black_list: "BILIBILI-HELPER"
