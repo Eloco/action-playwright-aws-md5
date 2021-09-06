@@ -1,1 +1,1 @@
-# action-playwright-aws-md5
+# action-aws-test
