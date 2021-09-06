@@ -64,11 +64,9 @@ jobs:
         if: ${{ env.IF_AWS == 'True'}}
         run: |
             export action_bucket=s3://`echo ${GITHUB_REPOSITORY_OWNER}action | tr "[A-Z]" "[a-z]"`
-            export command="python aws/md5_aws.py --files_path=$FILE_BASE 2>/dev/null"
+            export command="python aws/md5_aws.py --files_path=$FILE_PATH 2>/dev/null"
             files_num=`$command || $command || echo 0` #retry command twice 
-            ls $FILE_BASE
-            cat $FILE_PATH
-            echo $files_num
+            echo '$command $files_num'
             echo '::set-output name=FILE_NUM::'$files_num
         id: aws-md5
         env:
@@ -81,5 +79,5 @@ jobs:
             skype_username : ${{ secrets.SKYPE_USERNAME }}
             skype_password : ${{ secrets.SKYPE_PASSWORD }}
             skype_ids      : 19:d32d3d93d57740308986b42ec36e5525@thread.skype
-            send_msg_path  : $FILE_BASE 
+            send_msg_path  : $FILE_PATH 
             send_file_path : none
