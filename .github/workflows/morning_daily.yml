@@ -43,6 +43,7 @@ jobs:
             pipreqs .
             pip install -r requirements.txt
 
+      - name: Install Playwright
         if: ${{ env.IF_PLAYWRIGHT == 'True'}}
         run: |
             python -m playwright install
