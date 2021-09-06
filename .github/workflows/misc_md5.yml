@@ -17,7 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FILE_BASE: message
-      FILE_PATH: message/message.txt
       IF_AWS       : True
       IF_PLAYWRIGHT: False
     strategy:
@@ -25,6 +24,11 @@ jobs:
        include:
          - script: https://raw.githubusercontent.com/Eloco/Script-collect/main/misc/weather.sh
     steps:
+
+      - id: random-msg-path-generator
+        run: echo "::set-output name=random::$(echo ${FILE_BASE}/${RANDOM}.txt)"
+        shell: bash
+
       - name: Checkout codes
         uses: actions/checkout@v1
 
@@ -56,6 +60,7 @@ jobs:
             cat $FILE_PATH
         env:
             MATRIX_SCRIPT: ${{matrix.script}}
+            FILE_PATH:     ${{steps.random-msg-path-generator.outputs.random}}
 
       - name: aws setup
         if: ${{ env.IF_AWS == 'True'}}
