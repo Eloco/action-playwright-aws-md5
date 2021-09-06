@@ -31,10 +31,10 @@ jobs:
         with:
           python-version: 3.9
 
-      - name: set cn-lang
-        run: |
-            sudo apt-get install fonts-wqy-zenhei
-        continue-on-error: true
+          #- name: set cn-lang
+          #  run: |
+          #      sudo apt-get install fonts-wqy-zenhei
+          #  continue-on-error: true
 
       - name: Install dependencies
         run: |
@@ -51,6 +51,7 @@ jobs:
             mkdir $FILE_BASE
             echo "[GITHUB ACTION] <misc>"    >> $FILE_PATH
             export command="bash misc_script >> $FILE_PATH"
+            cat $FILE_PATH
             $command || $command  #retry command twice 
         env:
             MATRIX_SCRIPT: ${{matrix.script}}
