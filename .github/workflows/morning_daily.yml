@@ -13,7 +13,7 @@ on:
     - cron:  '00 00 * * *'
 
 jobs:
-  main:
+  local-script:
     runs-on: ubuntu-latest
     env:
       IF_AWS       : False
@@ -86,3 +86,89 @@ jobs:
             skype_ids      : 19:d32d3d93d57740308986b42ec36e5525@thread.skype
             send_msg_path  : message.txt 
             send_file_path : screenshot
+
+  remote-script:
+    runs-on: ubuntu-latest
+    env:
+      FILE_BASE: message
+      IF_AWS       : False
+      IF_PLAYWRIGHT: False
+    strategy:
+      matrix:
+       include:
+         - script: https://raw.githubusercontent.com/Eloco/Script-collect/main/misc/holidy.py
+    steps:
+      - id: random-msg-path-generator
+        run: echo "::set-output name=random::$(echo ${FILE_BASE}/${RANDOM}.txt)"
+        shell: bash
+
+      - name: Checkout codes
+        uses: actions/checkout@v1
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: set cn-lang
+        run: |
+            sudo apt-get install fonts-wqy-zenhei
+        continue-on-error: true
+
+      - name: Install dependencies
+        run: |
+            python -m pip install --upgrade pip
+            pip install pipreqs
+            pipreqs .
+            pip install -r requirements.txt
+
+      - name: run remote python script
+        run: |
+            curl $MATRIX_SCRIPT -o misc_script.py
+            chmod +x misc_script.py
+            pipreqs .
+            pip install -r requirements.txt
+            export command="python misc_script.py"
+            timeout 5m bash -c '($command || $command) >>$FILE_PATH'  #retry command twice 
+            sed -i '1i [GITHUB ACTION] <misc-aws-md5> holiday.py' $FILE_PATH
+            cat $FILE_PATH
+        env:
+            MATRIX_SCRIPT: ${{matrix.script}}
+            FILE_PATH:     ${{steps.random-msg-path-generator.outputs.random}}
+
+        if: ${{ env.IF_PLAYWRIGHT == 'True'}}
+        run: |
+            python -m playwright install
+
+      - name: aws setup
+        if: ${{ env.IF_AWS == 'True'}}
+        run: |
+            python -m pip install awscli
+            mkdir ~/.aws
+            echo "[default]" >> ~/.aws/credentials
+            echo "[default]" >> ~/.aws/config
+            echo "aws_access_key_id    = ${{ secrets.AWS_ACCESS_KEY_ID     }}" >> ~/.aws/credentials
+            echo "aws_secret_access_key= ${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
+            echo "region               = ap-east-1"                            >> ~/.aws/config
+
+      - name: aws md5 check
+        if: ${{ env.IF_AWS == 'True'}}
+        run: |
+            export action_bucket=s3://`echo ${GITHUB_REPOSITORY_OWNER}action | tr "[A-Z]" "[a-z]"`
+            export command="python aws/md5_aws.py --files_path=$FILE_BASE 2>/dev/null"
+            files_num=`timeout 5m bash -c '$command || $command || echo 0'` #retry command twice 
+            echo $files_num
+            echo '::set-output name=FILE_NUM::'$files_num
+        id: aws-md5
+        env:
+          IF_AWS: False
+
+      - name: send skype
+        uses: Eloco/docker-action-send-skype@v2
+        if  : steps.aws-md5.outputs.FILE_NUM != '0' || steps.aws-md5.conclusion == 'skipped' || env.IF_AWS == 'False'
+        with:
+            skype_username : ${{ secrets.SKYPE_USERNAME }}
+            skype_password : ${{ secrets.SKYPE_PASSWORD }}
+            skype_ids      : 19:d32d3d93d57740308986b42ec36e5525@thread.skype
+            send_msg_path  : ${{ env.FILE_BASE }}
+            send_file_path : none
