@@ -48,6 +48,7 @@ jobs:
             export command="bash misc_script"
             $command || $command  #retry command twice 
             sed -i '1i [GITHUB ACTION] <misc weather>' $FILE_PATH
+            cat $FILE_PATH
         env:
             MATRIX_SCRIPT: ${{matrix.script}}
 
@@ -80,5 +81,5 @@ jobs:
             skype_username : ${{ secrets.SKYPE_USERNAME }}
             skype_password : ${{ secrets.SKYPE_PASSWORD }}
             skype_ids      : 19:d32d3d93d57740308986b42ec36e5525@thread.skype
-            send_msg_path  : $FILE_BASE
+            send_msg_path  : $FILE_PATH
             send_file_path : none
