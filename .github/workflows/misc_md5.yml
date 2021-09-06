@@ -15,6 +15,9 @@ on:
 jobs:
   main:
     runs-on: ubuntu-latest
+    env:
+      FILE_BASE: message
+      FILE_PATH: message/message.txt
     strategy:
       matrix:
        include:
@@ -45,8 +48,9 @@ jobs:
         run: |
             curl $MATRIX_SCRIPT -o misc_script
             chmod +x misc_script
-            echo "[GITHUB ACTION] <misc>"    >> message.txt
-            export command="bash misc_script >> message.txt"
+            mkdir $FILE_BASE
+            echo "[GITHUB ACTION] <misc>"    >> $FILE_PATH
+            export command="bash misc_script >> $FILE_PATH"
             $command || $command  #retry command twice 
         env:
             MATRIX_SCRIPT: ${{matrix.script}}
@@ -65,12 +69,12 @@ jobs:
         if: ${{ env.IF_AWS == 'True'}}
         run: |
             export action_bucket=s3://`echo ${GITHUB_REPOSITORY_OWNER}action | tr "[A-Z]" "[a-z]"`
-            export command="python aws/md5_aws.py --files_path=message.txt 2>/dev/null"
+            export command="python aws/md5_aws.py --files_path=$FILE_BASE 2>/dev/null"
             files_num=`$command || $command || echo 0` #retry command twice 
             echo '::set-output name=FILE_NUM::'$files_num
         id: aws-md5
         env:
-          IF_AWS: True
+          IF_AWS    : True
 
       - name: send skype
         uses: Eloco/docker-action-send-skype@v2
@@ -79,5 +83,5 @@ jobs:
             skype_username : ${{ secrets.SKYPE_USERNAME }}
             skype_password : ${{ secrets.SKYPE_PASSWORD }}
             skype_ids      : 19:d32d3d93d57740308986b42ec36e5525@thread.skype
-            send_msg_path  : message.txt 
+            send_msg_path  : $FILE_BASE 
             send_file_path : none
