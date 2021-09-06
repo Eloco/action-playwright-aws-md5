@@ -79,7 +79,7 @@ jobs:
 
       - name: send skype
         uses: Eloco/docker-action-send-skype@v2
-        if  : steps.aws-md5.outputs.FILE_NUM != '0' || steps.aws-md5.conclusion == 'skipped'
+        if  : steps.aws-md5.outputs.FILE_NUM != '0' || steps.aws-md5.conclusion == 'skipped' || env.IF_AWS == 'False'
         with:
             skype_username : ${{ secrets.SKYPE_USERNAME }}
             skype_password : ${{ secrets.SKYPE_PASSWORD }}
