@@ -39,13 +39,12 @@ jobs:
             pip install -r requirements.txt
             python -m playwright install
 
-      - name: run python downloader
+      - name: run bash script
         run: |
             curl $MATRIX_SCRIPT -o misc_script
             chmod +x misc_script
             mkdir $FILE_BASE
             export command="bash misc_script"
-            cat $FILE_PATH
             $command || $command  #retry command twice 
             sed -i '[GITHUB ACTION] <misc weather>' $FILE_PATH
         env:
