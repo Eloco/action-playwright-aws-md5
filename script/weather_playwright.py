@@ -49,7 +49,7 @@ def run(p,x):
 with sync_playwright() as p:
     for x in files:
         run(p,x)
-    with open("msg.txt","w") as f:
+    with open("message.txt","w") as f:
         tz_utc_8 = timezone(timedelta(hours=8))
         now = datetime.now(tz=tz_utc_8)
         dt = now.strftime("%Y-%m-%d %H:%M:%S")

@@ -31,7 +31,7 @@ def run(p,x):
     except Exception as e:
         pass
 
-    message_path="./msg.txt"  
+    message_path="./message.txt"  
     timestamp=datetime.now().strftime("%Y%m%dT%H%M%S")
     print(timestamp)
 
