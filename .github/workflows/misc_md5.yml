@@ -81,5 +81,5 @@ jobs:
             skype_username : ${{ secrets.SKYPE_USERNAME }}
             skype_password : ${{ secrets.SKYPE_PASSWORD }}
             skype_ids      : 19:d32d3d93d57740308986b42ec36e5525@thread.skype
-            send_msg_path  : $FILE_PATH
+            send_msg_path  : ${{ env.FILE_BASE }}
             send_file_path : none
