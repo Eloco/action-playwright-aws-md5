@@ -1,4 +1,4 @@
-name: 'midday-daily'
+name: 'misc_md5'
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ on:
         tags:
           description: 'action'  
   schedule:
-    - cron:  '00 04 * * *'
+    - cron:  '*/10 * * * *'
 
 jobs:
   main:
