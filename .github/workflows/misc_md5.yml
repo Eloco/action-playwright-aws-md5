@@ -18,7 +18,8 @@ jobs:
     env:
       FILE_BASE: message
       FILE_PATH: message/message.txt
-      IF_AWS    : False
+      IF_AWS       : True
+      IF_PLAYWRIGHT: False
     strategy:
       matrix:
        include:
@@ -38,6 +39,10 @@ jobs:
             pip install pipreqs
             pipreqs .
             pip install -r requirements.txt
+
+      - name: Install Playwright
+        if: ${{ env.IF_PLAYWRIGHT == 'True'}}
+        run: |
             python -m playwright install
 
       - name: run bash script
