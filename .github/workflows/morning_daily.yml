@@ -125,6 +125,7 @@ jobs:
         run: |
             curl $MATRIX_SCRIPT -o misc_script.py
             chmod +x misc_script.py
+            mkdir $FILE_BASE
             pipreqs .
             pip install -r requirements.txt
             export command="python misc_script.py"
