@@ -66,11 +66,12 @@ jobs:
             export action_bucket=s3://`echo ${GITHUB_REPOSITORY_OWNER}action | tr "[A-Z]" "[a-z]"`
             export command="python aws/md5_aws.py --files_path=$FILE_PATH 2>/dev/null"
             files_num=`$command || $command || echo 0` #retry command twice 
-            echo '$command $files_num'
+            echo $command 
+            echo $files_num
             echo '::set-output name=FILE_NUM::'$files_num
         id: aws-md5
         env:
-          IF_AWS    : True
+          IF_AWS    : False
 
       - name: send skype
         uses: Eloco/docker-action-send-skype@v2
