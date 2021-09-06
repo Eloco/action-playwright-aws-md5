@@ -75,8 +75,6 @@ jobs:
             echo $files_num
             echo '::set-output name=FILE_NUM::'$files_num
         id: aws-md5
-        env:
-          IF_AWS: False
 
       - name: send skype
         uses: Eloco/docker-action-send-skype@v2
@@ -137,6 +135,7 @@ jobs:
             MATRIX_SCRIPT: ${{matrix.script}}
             FILE_PATH:     ${{steps.random-msg-path-generator.outputs.random}}
 
+      - name: Install Playwright
         if: ${{ env.IF_PLAYWRIGHT == 'True'}}
         run: |
             python -m playwright install
@@ -161,8 +160,6 @@ jobs:
             echo $files_num
             echo '::set-output name=FILE_NUM::'$files_num
         id: aws-md5
-        env:
-          IF_AWS: False
 
       - name: send skype
         uses: Eloco/docker-action-send-skype@v2
