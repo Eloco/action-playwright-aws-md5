@@ -118,16 +118,18 @@ jobs:
         run: |
             python -m pip install --upgrade pip
             pip install pipreqs
-            pipreqs .
-            pip install -r requirements.txt
+            #pipreqs .
+            #pip install -r requirements.txt
 
       - name: run remote python script
         run: |
             curl $MATRIX_SCRIPT -o misc_script.py
             chmod +x misc_script.py
             mkdir $FILE_BASE
-            pipreqs .
+
+            pipreqs . --force
             pip install -r requirements.txt
+
             export command="python misc_script.py"
             timeout 5m bash -c '($command || $command) >>$FILE_PATH'  #retry command twice 
             sed -i '1i [GITHUB ACTION] <misc-aws-md5> holiday.py' $FILE_PATH
