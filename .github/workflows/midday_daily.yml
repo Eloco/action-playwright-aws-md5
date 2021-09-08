@@ -16,7 +16,7 @@ jobs:
   main:
     runs-on: ubuntu-latest
     env:
-      IF_AWS       : False
+      IF_AWS       : True
       IF_PLAYWRIGHT: True
     strategy:
       matrix:
