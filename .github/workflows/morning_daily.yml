@@ -16,7 +16,7 @@ jobs:
   local-script:
     runs-on: ubuntu-latest
     env:
-      IF_AWS       : False
+      IF_AWS       : True
       IF_PLAYWRIGHT: True
     strategy:
       matrix:
@@ -90,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FILE_BASE: message
-      IF_AWS       : False
+      IF_AWS       : True
       IF_PLAYWRIGHT: False
     strategy:
       matrix:
