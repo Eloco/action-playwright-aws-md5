@@ -80,11 +80,11 @@ jobs:
         uses: Eloco/docker-action-send-skype@v2
         if  : steps.aws-md5.outputs.FILE_NUM != '0' || steps.aws-md5.conclusion == 'skipped' || env.IF_AWS == 'False'
         with:
-   kype_username : ${{ secrets.SKYPE_USERNAME }}
-   kype_password : ${{ secrets.SKYPE_PASSWORD }}
+            skype_username : ${{ secrets.SKYPE_USERNAME }}
+            skype_password : ${{ secrets.SKYPE_PASSWORD }}
             skype_ids      : 19:d32d3d93d57740308986b42ec36e5525@thread.skype
-            send_msg_path  : message.txt 
-            send_file_path : screenshot
+            send_msg_path  : ${{ env.FILE_BASE }}
+            send_file_path : none
 
   remote-script:
     runs-on: ubuntu-latest
