@@ -1,4 +1,4 @@
-name: 'playwright_list_news'
+name: 'sec_playwright_list_news'
 
 on:
   workflow_dispatch:

@@ -1,4 +1,4 @@
-name: 'AWS_Del_Bucket'
+name: 'sec_aws_del_bucket'
 
 on:
   workflow_dispatch:

@@ -1,4 +1,4 @@
-name: 'Bili_Daily'
+name: 'sec_bili_daily'
 
 on:
   workflow_dispatch:

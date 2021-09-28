@@ -1,4 +1,4 @@
-name: 'MAIL_MONITOR'
+name: 'sec_mail_monitor'
 
 on:
   workflow_dispatch:

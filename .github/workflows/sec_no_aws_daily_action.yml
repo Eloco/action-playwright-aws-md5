@@ -1,4 +1,4 @@
-name: 'NO_AWS_Daily'
+name: 'sec_no_aws_daily'
 
 on:
   workflow_dispatch:

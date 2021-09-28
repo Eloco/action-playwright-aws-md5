@@ -1,4 +1,4 @@
-name: 'SEC_MISC_ACTION'
+name: 'sec_misc'
 
 on:
   workflow_dispatch:
