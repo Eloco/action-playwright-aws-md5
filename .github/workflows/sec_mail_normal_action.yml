@@ -58,10 +58,10 @@ jobs:
 
       - name: run python downloader
         run: |
-            export MAIL_USER=${{secrets[matrix.mail_user]}}
-            export MAIL_PASS=${{secrets[matrix.mail_pass]}}
-            export MAIL_SERVER=$MATRIX_mail_server
-            export MAIL_BOX=$MATRIX_mail_box
+            export MAIL_USER = ${{secrets[matrix.mail_user]}}
+            export MAIL_PASS = ${{secrets[matrix.mail_pass]}}
+            export MAIL_SERVER = ${{matrix.mail_server}}
+            export MAIL_BOX    = ${{matrix.mail_box}}
             python mail/mail_normal.py
 
       - name: aws setup
@@ -91,7 +91,6 @@ jobs:
         with:
             skype_username : ${{ secrets.SKYPE_MINE_USERNAME }}
             skype_password : ${{ secrets.SKYPE_MINE_PASSWORD }}
-            skype_ids      : $MATRIX_send_skype_ids
+            skype_ids      : ${{matrix.send_skype_ids}}
             send_msg_path  : download 
             send_file_path : none 
-
