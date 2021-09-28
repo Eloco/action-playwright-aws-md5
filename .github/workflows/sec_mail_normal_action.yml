@@ -17,7 +17,8 @@ on:
 jobs:
   main:
     runs-on: ubuntu-latest
-    matrix:
+    strategy:
+      matrix:
        include:
          - mail_user: ${{ secrets.WORK_OUTLOOK_USER }}
            mail_pass: ${{ secrets.WORK_OUTLOOK_KEY }}
