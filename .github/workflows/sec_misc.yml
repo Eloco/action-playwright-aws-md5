@@ -1,0 +1,42 @@
+name: 'MISC_ACTION'
+
+on:
+  workflow_dispatch:
+    inputs:
+        logLevel:
+          description: 'Log level'     
+          required: true
+          default: 'warning'
+        tags:
+          description: 'any info?'  
+  schedule:
+    - cron:  '00 22 * * *'
+
+jobs:
+  count_day:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout codes
+        uses: actions/checkout@v1
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+
+      - name: run misc_1
+        run: |
+            mkdir message
+            wget https://raw.githubusercontent.com/Eloco/Script-collect/main/misc/count_day.py
+            echo "[GITHUB ACTION] misc_1" >> message/1.txt
+            python count_day.py           >> message/1.txt
+
+      - name: send skype
+        uses: Eloco/docker-action-send-skype@v2
+        with:
+            skype_username : ${{ secrets.SKYPE_MINE_USERNAME }}
+            skype_password : ${{ secrets.SKYPE_MINE_PASSWORD }}
+            skype_ids      : 19:5a8aeaf6a918417a8b9396982180afd0@thread.skype
+            send_msg_path  : message 
+            send_file_path : none 
