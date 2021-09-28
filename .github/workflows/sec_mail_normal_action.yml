@@ -58,10 +58,10 @@ jobs:
 
       - name: run python downloader
         run: |
-            export MAIL_USER = ${{secrets[matrix.mail_user]}}
-            export MAIL_PASS = ${{secrets[matrix.mail_pass]}}
-            export MAIL_SERVER = ${{matrix.mail_server}}
-            export MAIL_BOX    = ${{matrix.mail_box}}
+            export MAIL_USER="${{secrets[matrix.mail_user]}}"
+            export MAIL_PASS="${{secrets[matrix.mail_pass]}}"
+            export MAIL_SERVER="${{matrix.mail_server}}"
+            export MAIL_BOX="${{matrix.mail_box}}"
             python mail/mail_normal.py
 
       - name: aws setup
