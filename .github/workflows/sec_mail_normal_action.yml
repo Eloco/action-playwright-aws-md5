@@ -20,12 +20,12 @@ jobs:
     strategy:
       matrix:
        include:
-         - mail_user: ${{ secrets.WORK_OUTLOOK_USER }}
-           mail_pass: ${{ secrets.WORK_OUTLOOK_KEY }}
+         - mail_user: WORK_OUTLOOK_USER
+           mail_pass: WORK_OUTLOOK_KEY
            mail_server: 'outlook.office365.com'
            mail_box: 'INBOX'
-         - mail_user: ${{ secrets.MINE_GMAIL_USER }}
-           mail_pass: ${{ secrets.MINE_GMAIL_KEY }}
+         - mail_user: MINE_GMAIL_USER
+           mail_pass: MINE_GMAIL_KEY
            mail_server: 'imap.gmail.com'
            mail_box: 'Important'
 
@@ -56,8 +56,8 @@ jobs:
 
       - name: run python downloader
         run: |
-            export MAIL_USER=$MATRIX_mail_user
-            export MAIL_PASS=$MATRIX_mail_pass
+            export MAIL_USER=${{secrets[matrix.mail_user]}}
+            export MAIL_PASS=${{secrets[matrix.mail_pass]}}
             export MAIL_SERVER=$MATRIX_mail_server
             export MAIL_BOX=$MATRIX_mail_box
             python mail/mail_normal.py
