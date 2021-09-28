@@ -1,4 +1,4 @@
-name: 'ISI_Daily'
+name: 'DAS_Daily'
 
 on:
   workflow_dispatch:
