@@ -24,10 +24,12 @@ jobs:
            mail_pass: WORK_OUTLOOK_KEY
            mail_server: 'outlook.office365.com'
            mail_box: 'INBOX'
+           send_skype_ids: '19:b690a79c04204eb49af0d745893a2d95@thread.skype'
          - mail_user: MINE_GMAIL_USER
            mail_pass: MINE_GMAIL_KEY
            mail_server: 'imap.gmail.com'
            mail_box: 'Important'
+           send_skype_ids: '19:4ebaa5742000401fadf45f648138df8f@thread.skype'
 
     steps:
       - name: Checkout codes
@@ -89,7 +91,7 @@ jobs:
         with:
             skype_username : ${{ secrets.SKYPE_MINE_USERNAME }}
             skype_password : ${{ secrets.SKYPE_MINE_PASSWORD }}
-            skype_ids      : 19:b690a79c04204eb49af0d745893a2d95@thread.skype
+            skype_ids      : $MATRIX_send_skype_ids
             send_msg_path  : download 
             send_file_path : none 
 
