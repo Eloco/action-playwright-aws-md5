@@ -18,6 +18,7 @@ jobs:
     env:
       IF_AWS       : True
       IF_PLAYWRIGHT: True
+      FILE_BASE: message
     strategy:
       matrix:
        include:
@@ -83,8 +84,8 @@ jobs:
             skype_username : ${{ secrets.SKYPE_USERNAME }}
             skype_password : ${{ secrets.SKYPE_PASSWORD }}
             skype_ids      : 19:d32d3d93d57740308986b42ec36e5525@thread.skype
+            send_file_path : "screenshot"
             send_msg_path  : ${{ env.FILE_BASE }}
-            send_file_path : none
 
   remote-script:
     runs-on: ubuntu-latest
