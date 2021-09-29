@@ -33,11 +33,6 @@ jobs:
       - name: Checkout codes
         uses: actions/checkout@v1
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-
       - name: run bash script
         run: |
             curl $MATRIX_SCRIPT -o misc_script
@@ -117,6 +112,8 @@ jobs:
             pip install pipreqs
             pipreqs .
             pip install -r requirements.txt
+        env:
+            MATRIX_SCRIPT: ${{matrix.script}}
 
       - name: Install Playwright
         if: ${{ env.IF_PLAYWRIGHT  == 'True'}}
