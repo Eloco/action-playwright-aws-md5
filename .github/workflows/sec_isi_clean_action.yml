@@ -43,7 +43,8 @@ jobs:
             #export command="aws s3 rb $action_bucket --force 2>/dev/null"
             export command="aws s3 rm $action_bucket --recursive"
             echo "[GITHUB ACTION] <AWS Bucket>" >> message.txt
-            (${command} || $(command}) >> message.txt
+            #(${command} || $(command}) >> message.txt
+            $command >> message.txt
             echo "[$action_bucket] just get cleaned!!" >> message.txt
 
       - name: send skype
