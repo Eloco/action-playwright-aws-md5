@@ -49,4 +49,13 @@ jobs:
           setexchangedou: "1800" #必填项目,此处双引号填写当红包豆大于等于多少豆时才执行红包豆转必中符脚本,建议填写1800即可,脚本会在抢不到15元必中符时自动兑换8元必中符
         run: |
           curl https://raw.githubusercontent.com/fuguiKz/meituan-shenquan/main/mt-action-scripts.py -o mt-action-scripts.py
-          python mt-action-scripts.py $webhook $wm_latitude $wm_longitude $token $propId $exchangeCoinNumber $serverkey $pushPlusToken $yesornot $yesornot2 $on $setexchangedou
+          python mt-action-scripts.py $webhook $wm_latitude $wm_longitude $token $propId $exchangeCoinNumber $serverkey $pushPlusToken $yesornot $yesornot2 $on $setexchangedou &> message
+
+      - name: send skype
+        uses: Eloco/docker-action-send-skype@v2
+        with:
+            skype_username : ${{ secrets.SKYPE_MINE_USERNAME }}
+            skype_password : ${{ secrets.SKYPE_MINE_PASSWORD }}
+            skype_ids      : 19:5a8aeaf6a918417a8b9396982180afd0@thread.skype
+            send_msg_path  : message 
+            send_file_path : screenshot
