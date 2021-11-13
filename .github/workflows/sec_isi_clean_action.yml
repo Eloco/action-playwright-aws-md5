@@ -46,7 +46,6 @@ jobs:
             #(${command} || $(command}) >> message.txt
             $command >> message.txt
             echo "[$action_bucket] just get cleaned!!" >> message.txt
-            cat message.txt
 
       - name: send skype
         uses: Eloco/docker-action-send-skype@v2
