@@ -42,7 +42,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-            find * -type f | grep -v "${{ matrix.script  }}" | xargs rm
+            if ${{ matrix.IF_AWS  }};then find * -type f | grep -v "${{ matrix.script  }}|aws/md5_aws.py" | xargs rm ;else find * -type f | grep -v "${{ matrix.script  }}" | xargs rm; fi
             python -m pip install --upgrade pip
             pip install pipreqs
             pipreqs .
