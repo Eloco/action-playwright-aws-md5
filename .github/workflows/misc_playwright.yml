@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: '${{ matrix.repo_name  }}'
-          token:      '${{ matrix.repo_token  }}'
+          token:      '${{ secrets[matrix.repo_token]  }}'
 
       - name: Set up Python
         uses: actions/setup-python@v2
