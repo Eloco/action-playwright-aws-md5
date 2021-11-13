@@ -19,7 +19,7 @@ jobs:
       matrix:
        include:
          - script: script/sec_playwright_news.py
-           skype_id: 19:c941776d71c7417abf8fdb06b4160e05@thread.skype
+           skype_id: 19:1aff469494654be8a854f36cbb68d7ec@thread.skype
            skype_username : SKYPE_MINE_USERNAME
            skype_password : SKYPE_MINE_PASSWORD
            FILE_BASE: message
