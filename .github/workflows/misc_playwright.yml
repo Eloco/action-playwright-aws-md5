@@ -42,7 +42,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-            find * | grep -v "${{ matrix.script  }}" | xargs rm
+            find * -type f | grep -v "${{ matrix.script  }}" | xargs rm
             python -m pip install --upgrade pip
             pip install pipreqs
             pipreqs .
