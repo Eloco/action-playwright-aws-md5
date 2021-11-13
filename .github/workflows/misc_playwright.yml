@@ -1,0 +1,94 @@
+name: 'misc_playwrigt_matrix'
+
+on:
+  workflow_dispatch:
+    inputs:
+        logLevel:
+          description: 'Log level'     
+          required: true
+          default: 'warning'
+        tags:
+          description: 'action'  
+  schedule:
+    - cron:  '*/8 * * * *'
+
+jobs:
+  shell:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+       include:
+         - script: script/sec_playwright_news.py
+           skype_id: 19:c941776d71c7417abf8fdb06b4160e05@thread.skype
+           skype_username : SKYPE_MINE_USERNAME
+           skype_password : SKYPE_MINE_PASSWORD
+           FILE_BASE: message
+           IF_AWS       : True
+           IF_PLAYWRIGHT: True
+           repo_name  : Eloco/Sec-action-playwright-aws-md5
+           repo_token : SEC_TOKEN
+           
+    steps:
+      - name: Checkout codes
+        uses: actions/checkout@v2
+        with:
+          repository: '${{ matrix.repo_name  }}'
+          token:      '${{ matrix.repo_token  }}'
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+            rm  -rf  !(${{ matrix.script  }}) 
+            python -m pip install --upgrade pip
+            pip install pipreqs
+            pipreqs .
+            pip install -r requirements.txt
+        env:
+            MATRIX_SCRIPT: ${{matrix.script}}
+
+      - name: Install Playwright
+        if: ${{ env.IF_PLAYWRIGHT  == 'True'}}
+        run: |
+            python -m playwright install
+        env:
+            IF_PLAYWRIGHT: ${{ matrix.IF_PLAYWRIGHT }}
+
+      - name: run python downloader
+        run: |
+            export command="python ${{ matrix.script  }} 2>/dev/null"
+            $command || $command  #retry command twice 
+
+      - name: aws setup
+        if: ${{ env.IF_AWS == 'True'}}
+        run: |
+            python -m pip install awscli
+            mkdir ~/.aws
+            echo "[default]" >> ~/.aws/credentials
+            echo "[default]" >> ~/.aws/config
+            echo "aws_access_key_id    = ${{ secrets.AWS_ACCESS_KEY_ID     }}" >> ~/.aws/credentials
+            echo "aws_secret_access_key= ${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
+            echo "region               = ap-east-1"                            >> ~/.aws/config
+
+      - name: aws md5 check
+        if: ${{ env.IF_AWS == 'True'}}
+        run: |
+            export action_bucket=s3://`echo ${GITHUB_REPOSITORY_OWNER}action | tr "[A-Z]" "[a-z]"`
+            export command="python aws/md5_aws.py --files_path=$FILE_BASE 2>/dev/null"
+            files_num=`timeout 5m bash -c '$command || $command || echo 0'` #retry command twice 
+            echo $files_num
+            echo '::set-output name=FILE_NUM::'$files_num
+        id: aws-md5
+
+      - name: send skype
+        uses: Eloco/docker-action-send-skype@v2
+        if  : env.IF_AWS == 'False' || steps.aws-md5.conclusion == 'skipped' || steps.aws-md5.outputs.FILE_NUM != '0'  
+        with:
+            skype_username : ${{ secrets.SKYPE_MINE_USERNAME }}
+            skype_password : ${{ secrets.SKYPE_MINE_PASSWORD }}
+            skype_ids      : ${{ matrix.skype_id  }}
+            send_msg_path  : ${{ matrix.FILE_BASE }}
+            send_file_path : none
