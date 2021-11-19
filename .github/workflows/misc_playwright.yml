@@ -27,6 +27,24 @@ jobs:
            IF_PLAYWRIGHT: True
            repo_name  : Eloco/Sec-action-playwright-aws-md5
            repo_token : SEC_TOKEN
+         - script: script/sci_math_playwright_news.py
+           skype_id: 19:aa3748bfde06493a9df8b393bf470efd@thread.skype
+           skype_username : SKYPE_MINE_USERNAME
+           skype_password : SKYPE_MINE_PASSWORD
+           FILE_BASE: message
+           IF_AWS       : True
+           IF_PLAYWRIGHT: True
+           repo_name  : Eloco/Sec-action-playwright-aws-md5
+           repo_token : SEC_TOKEN
+         - script: script/sci_phy_playwright_news.py
+           skype_id: 19:dc5daf5835d342bab4c4d1d1c277e5bc@thread.skype
+           skype_username : SKYPE_MINE_USERNAME
+           skype_password : SKYPE_MINE_PASSWORD
+           FILE_BASE: message
+           IF_AWS       : True
+           IF_PLAYWRIGHT: True
+           repo_name  : Eloco/Sec-action-playwright-aws-md5
+           repo_token : SEC_TOKEN
            
     steps:
       - name: Checkout codes
