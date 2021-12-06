@@ -1,4 +1,4 @@
-name: gitleaks
+name: gist-md5
 
 on: [push]
 
