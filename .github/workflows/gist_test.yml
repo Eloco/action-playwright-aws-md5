@@ -21,6 +21,7 @@ jobs:
         id: sync
         with:
           auth: ${{ secrets.SEC_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SEC_TOKEN }}
           gist_url: https://gist.github.com/Eloco/51ecb4c20767e5326ba1a5323a42a631
           gist_title: Example Gist Title
           gist_description: Example Gist Description
