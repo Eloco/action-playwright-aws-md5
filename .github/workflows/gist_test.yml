@@ -23,16 +23,11 @@ jobs:
           cat md5.txt
           echo ff >> md5.txt
 
-      - name: Increment
-        id: increment
-        run: |
-          cat md5.txt
-          echo "::set-output name=value::`cat md5.txt`"
-
-      - uses: sergeysova/gist-write-action@v1
+      - uses: popsiclestick/gist-sync-action@v1.2.0
+        id: sync
         with:
-          gist_id: 51ecb4c20767e5326ba1a5323a42a631
-          file_name: md5.txt
-          content: ${{steps.increment.outputs.value}}
-        env:
-          GITHUB_TOKEN: ${{ secrets.SEC_TOKEN }}
+          auth: ${{ secrets.SEC_TOKEN }}
+          gist_url: https://gist.github.com/Eloco/51ecb4c20767e5326ba1a5323a42a631
+          gist_title: Example Gist Title
+          gist_description: Example Gist Description
+          github_file: md5.txt
