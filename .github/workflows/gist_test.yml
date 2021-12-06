@@ -7,6 +7,8 @@ jobs:
     name: gist-sync
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - uses: sergeysova/gist-read-action@v1
         id: example-gist
         with:
@@ -15,12 +17,10 @@ jobs:
       - name: run bash script
         run: |
           cat md5.txt
-      - name: Checkout
-        uses: actions/checkout@v2
       - uses: popsiclestick/gist-sync-action@v1.2.0
         id: sync
         with:
-          auth: ${{ secrets.SEC_TOKEN }}
+          auth: ${{ secrets[SEC_TOKEN] }}
           gist_url: https://gist.github.com/Eloco/51ecb4c20767e5326ba1a5323a42a631
           gist_title: Example Gist Title
           gist_description: Example Gist Description
