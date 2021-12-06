@@ -18,7 +18,6 @@ jobs:
           gist_description: Example Gist Description
           github_file: ./md5.txt
 
-    steps:
       - name: run bash script
         run: |
           cat md5.txt
