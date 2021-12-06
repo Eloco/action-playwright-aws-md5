@@ -16,6 +16,8 @@ jobs:
           file_name: md5.txt
         env:
           GITHUB_TOKEN: ${{ secrets.SEC_TOKEN }}
+      - name: show content
+        run: echo "Hello ${{ steps.example-gist.outputs.content }}" > md5.txt
       - name: run bash script
         run: |
           cat md5.txt
