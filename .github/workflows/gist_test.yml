@@ -29,3 +29,17 @@ jobs:
           gist_id: https://gist.github.com/Eloco/51ecb4c20767e5326ba1a5323a42a631
           gist_file_name: md5.txt
           file_path: ./md5.txt
+
+      - name: Increment
+        id: increment
+        run: |
+          cat md5.txt
+          echo "::set-output name=value::`cat md5.txt`"
+
+      - uses: sergeysova/gist-write-action@v1
+        with:
+          gist_id: 51ecb4c20767e5326ba1a5323a42a631
+          file_name: md5.txt
+          content: ${{steps.increment.outputs.value}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.SEC_TOKEN }}
