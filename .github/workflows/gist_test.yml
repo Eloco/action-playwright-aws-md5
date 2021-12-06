@@ -7,6 +7,14 @@ jobs:
     name: gist-sync
     runs-on: ubuntu-latest
     steps:
+      - uses: sergeysova/gist-read-action@v1
+        id: example-gist
+        with:
+          gist_id: 51ecb4c20767e5326ba1a5323a42a631
+          file_name: md5.txt
+      - name: run bash script
+        run: |
+          cat md5.txt
       - name: Checkout
         uses: actions/checkout@v2
       - uses: popsiclestick/gist-sync-action@v1.2.0
@@ -18,6 +26,3 @@ jobs:
           gist_description: Example Gist Description
           github_file: ./md5.txt
 
-      - name: run bash script
-        run: |
-          cat md5.txt
