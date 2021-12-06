@@ -21,6 +21,7 @@ jobs:
       - name: run bash script
         run: |
           cat md5.txt
+          echo ff >> md5.txt
       - uses: popsiclestick/gist-sync-action@v1.2.0
         id: sync
         with:
@@ -28,5 +29,4 @@ jobs:
           gist_url: https://gist.github.com/Eloco/51ecb4c20767e5326ba1a5323a42a631
           gist_title: Example Gist Title
           gist_description: Example Gist Description
-          github_file: ./md5.txt
-
+          github_file: md5.txt
