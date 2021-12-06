@@ -22,13 +22,6 @@ jobs:
         run: |
           cat md5.txt
           echo ff >> md5.txt
-      - name: Deploy
-        uses: exuanbo/actions-deploy-gist@v1
-        with:
-          token: ${{ secrets.SEC_TOKEN }}
-          gist_id: https://gist.github.com/Eloco/51ecb4c20767e5326ba1a5323a42a631
-          gist_file_name: md5.txt
-          file_path: ./md5.txt
 
       - name: Increment
         id: increment
