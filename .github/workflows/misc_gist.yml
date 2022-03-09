@@ -27,7 +27,7 @@ jobs:
            IF_PLAYWRIGHT: False
            repo_name  : Eloco/action-playwright-aws-md5
            repo_token : SEC_TOKEN
-           gist_id : a86446974e0708071d91bbd8f6bfed7b
+           gist_id : cdaa298a93384460a92e051389a5d11f
 
     steps:
       - name: Checkout codes
