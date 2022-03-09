@@ -45,6 +45,7 @@ jobs:
             find * -type f | grep -v "${{ matrix.script  }}" | xargs rm
             python -m pip install --upgrade pip
             pip install pipreqs
+            pip install fire
             pipreqs .
             pip install -r requirements.txt
         env:
