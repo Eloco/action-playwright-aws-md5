@@ -1,4 +1,4 @@
-name: 'midday-daily'
+name: 'midday_daily'
 
 on:
   workflow_dispatch:
