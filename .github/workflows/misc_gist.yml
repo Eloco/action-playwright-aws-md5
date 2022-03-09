@@ -63,7 +63,7 @@ jobs:
         id: example-gist
         with:
           gist_id: ${{matrix.gist_id}}
-          file_name: md5.txt
+          file_name: action-playwright-aws-md5/misc_gist.yml
         env:
           GITHUB_TOKEN: ${{ secrets.SEC_TOKEN }}
 
