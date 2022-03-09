@@ -16,7 +16,6 @@ jobs:
   shell:
     runs-on: ubuntu-latest
     env:
-      IF_PLAYWRIGHT: True
       gist_id : 3fd32567b6c8f6c79808905de208e59a
       repo_name  : Eloco/action-playwright-aws-md5
       repo_token : SEC_TOKEN
