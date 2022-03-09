@@ -106,7 +106,6 @@ jobs:
             send_msg_path  : message.txt 
             send_file_path : screenshot
 
-jobs:
   non-playwright:
     runs-on: ubuntu-latest
     env:
