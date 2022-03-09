@@ -27,7 +27,7 @@ jobs:
            IF_PLAYWRIGHT: False
            repo_name  : Eloco/action-playwright-aws-md5
            repo_token : SEC_TOKEN
-           gist_id : abffb8f691b5b1a1852a45569d32d9c4
+           gist_id : ed4a143251531a9152e199bb039bc4ab
 
     steps:
       - name: Checkout codes
@@ -63,7 +63,7 @@ jobs:
         id: example-gist
         with:
           gist_id: ${{matrix.gist_id}}
-          file_name: action-playwright-aws-md5/misc_gist.yml
+          file_name: md5.txt
         env:
           GITHUB_TOKEN: ${{ secrets.SEC_TOKEN }}
 
