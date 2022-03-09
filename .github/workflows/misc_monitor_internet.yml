@@ -10,7 +10,7 @@ on:
         tags:
           description: 'action'  
   schedule:
-    - cron:  '*/8 * * * *'
+    - cron:  '*/20 * * * *'
 
 jobs:
   shell:
