@@ -24,7 +24,7 @@ jobs:
        include:
          - script: script/playwright_monitor_github_topic.py
            script_name: playwright_monitor_github_topic.py
-           skype_id: 19:685d8e27d15d473eb1066f8dac09dcda@thread.skype
+           skype_id: 19:6597e8c0288946c780660396d59929e3@thread.skype
            FILE_BASE: message
            IF_PLAYWRIGHT: True
          - script: script/playwright_monitor_internet.py
