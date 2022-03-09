@@ -17,7 +17,7 @@ jobs:
   playwright:
     runs-on: ubuntu-latest
     env:
-      gist_id : 3fd32567b6c8f6c79808905de208e59a
+      gist_id : 45b4269c1d0d3e6fc894e1de23f92488
       repo_name  : Eloco/action-playwright-aws-md5
       repo_token : SEC_TOKEN
       IF_PLAYWRIGHT: True
@@ -109,7 +109,7 @@ jobs:
   non-playwright:
     runs-on: ubuntu-latest
     env:
-      gist_id : 3fd32567b6c8f6c79808905de208e59a
+      gist_id : 45b4269c1d0d3e6fc894e1de23f92488
       repo_name  : Eloco/action-playwright-aws-md5
       repo_token : SEC_TOKEN
       IF_PLAYWRIGHT: False
