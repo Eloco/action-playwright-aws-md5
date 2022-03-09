@@ -1,4 +1,4 @@
-name: 'sec_misc'
+name: 'schedule_sec_misc'
 
 on:
   workflow_dispatch:
