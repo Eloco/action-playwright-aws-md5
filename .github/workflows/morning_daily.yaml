@@ -66,6 +66,7 @@ jobs:
       - name: gist-read
         uses: sergeysova/gist-read-action@v1
         id: example-gist
+        continue-on-error: true
         with:
           gist_id: ${{env.gist_id}}
           file_name: ${{matrix.script_name}}
@@ -75,7 +76,7 @@ jobs:
       - name: md5_count
         run: |
             wget https://raw.githubusercontent.com/Eloco/action-playwright-aws-md5/main/script/gist_md5.py
-            echo "${{ steps.example-gist.outputs.content }}" > md5.txt
+            echo "${{ steps.example-gist.outputs.content }}" > md5.txt || echo "first init" > md5.txt 
             files_num=`python gist_md5.py --file_md5="./md5.txt" --file_dir=${{ env.FILE_BASE }}`
             echo $files_num
             echo '::set-output name=FILE_NUM::'$files_num
@@ -170,6 +171,7 @@ jobs:
       - name: gist-read
         uses: sergeysova/gist-read-action@v1
         id: example-gist
+        continue-on-error: true
         with:
           gist_id: ${{env.gist_id}}
           file_name: ${{matrix.script_name}}
@@ -179,7 +181,7 @@ jobs:
       - name: md5_count
         run: |
             wget https://raw.githubusercontent.com/Eloco/action-playwright-aws-md5/main/script/gist_md5.py
-            echo "${{ steps.example-gist.outputs.content }}" > md5.txt
+            echo "${{ steps.example-gist.outputs.content }}" > md5.txt || echo "first init" > md5.txt 
             files_num=`python gist_md5.py --file_md5="./md5.txt" --file_dir=${{ env.FILE_BASE }}`
             echo $files_num
             echo '::set-output name=FILE_NUM::'$files_num
