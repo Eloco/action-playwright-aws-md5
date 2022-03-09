@@ -68,6 +68,7 @@ jobs:
       - name: Install Playwright
         if: ${{ env.IF_PLAYWRIGHT  == 'True'}}
         run: |
+            pip install playwright
             python -m playwright install
         env:
             IF_PLAYWRIGHT: ${{ matrix.IF_PLAYWRIGHT }}
