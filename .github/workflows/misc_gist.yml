@@ -21,13 +21,14 @@ jobs:
          - script: https://raw.githubusercontent.com/Eloco/Script-collect/main/misc/weather.sh
            if_skype: True
            skype_id: 19:d32d3d93d57740308986b42ec36e5525@thread.skype
+
            skype_username : SKYPE_USERNAME
            skype_password : SKYPE_PASSWORD
            FILE_BASE: msg
            IF_PLAYWRIGHT: False
            repo_name  : Eloco/action-playwright-aws-md5
            repo_token : SEC_TOKEN
-           gist_id : cdaa298a93384460a92e051389a5d11f
+           gist_id : 3fd32567b6c8f6c79808905de208e59a
 
     steps:
       - name: Checkout codes
@@ -91,8 +92,8 @@ jobs:
         with:
           auth: ${{ secrets.SEC_TOKEN }}
           gist_url: https://gist.github.com/Eloco/${{matrix.gist_id}}
-          gist_title: ${{ env.GITHUB_WORKFLOW }}
-          gist_description: ${{ env.GITHUB_WORKFLOW }}
+          gist_title: misc_gist
+          gist_description: misc_gist
           github_file: md5.txt
 
       - name: send skype

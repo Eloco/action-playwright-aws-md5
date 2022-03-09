@@ -15,7 +15,7 @@ on:
 jobs:
   main:
     env:
-      gist_id : e393926f15a601b1e5197c1e7a7db037
+      gist_id : 3fd32567b6c8f6c79808905de208e59a
       FILE_BASE: message
       IF_PLAYWRIGHT: False
     runs-on: ubuntu-latest
@@ -73,8 +73,8 @@ jobs:
         with:
           auth: ${{ secrets.SEC_TOKEN }}
           gist_url: https://gist.github.com/Eloco/${{env.gist_id}}
-          gist_title: ${{ env.GITHUB_WORKFLOW }}
-          gist_description: ${{ env.GITHUB_WORKFLOW }}
+          gist_title: sec_playwright_list_news
+          gist_description: sec_playwright_list_news
           github_file: md5.txt
 
       - name: send skype
