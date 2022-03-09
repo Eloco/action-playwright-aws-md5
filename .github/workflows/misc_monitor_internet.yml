@@ -1,4 +1,4 @@
-name: 'misc_playwrigt_matrix'
+name: 'misc_monitor_internet'
 
 on:
   workflow_dispatch:
