@@ -32,7 +32,7 @@ jobs:
       - name: Checkout codes
         uses: actions/checkout@v2
         with:
-          repository: '${{ matrix.repo_name  }}'
+          repository: '${{ env.repo_name  }}'
           token:      '${{ secrets[env.repo_token]  }}'
 
       - name: Set up Python
