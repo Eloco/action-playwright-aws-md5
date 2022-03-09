@@ -17,7 +17,6 @@ jobs:
   playwright:
     runs-on: ubuntu-latest
     env:
-      gist_id : 45b4269c1d0d3e6fc894e1de23f92488
       repo_name  : Eloco/action-playwright-aws-md5
       repo_token : SEC_TOKEN
       IF_PLAYWRIGHT: True
@@ -27,10 +26,11 @@ jobs:
          - script: script/github_playwright.py
            script_name: github_playwright
            skype_id: 19:d32d3d93d57740308986b42ec36e5525@thread.skype
+           gist_id : 3fd32567b6c8f6c79808905de208e59a
          - script: script/covid19CN_playwright.py
            script_name: covid19CN_playwright
            skype_id: 19:d32d3d93d57740308986b42ec36e5525@thread.skype
-           IF_PLAYWRIGHT: True
+           gist_id : 3fd32567b6c8f6c79808905de208e59a
 
     steps:
       - name: Checkout codes
@@ -72,7 +72,7 @@ jobs:
         uses: sergeysova/gist-read-action@v1
         id: example-gist
         with:
-          gist_id: ${{env.gist_id}}
+          gist_id: ${{matrix.gist_id}}
           file_name: ${{matrix.script_name}}
         env:
           GITHUB_TOKEN: ${{ secrets.SEC_TOKEN }}
@@ -91,7 +91,7 @@ jobs:
         if  :  steps.gist-md5.outputs.FILE_NUM != '0'
         with:
           auth: ${{ secrets.SEC_TOKEN }}
-          gist_url: https://gist.github.com/Eloco/${{env.gist_id}}
+          gist_url: https://gist.github.com/Eloco/${{matrix.gist_id}}
           gist_title: ${{matrix.script_name}}
           gist_description: ${{matrix.script_name}}
           github_file: md5.txt
@@ -109,7 +109,6 @@ jobs:
   non-playwright:
     runs-on: ubuntu-latest
     env:
-      gist_id : 45b4269c1d0d3e6fc894e1de23f92488
       repo_name  : Eloco/action-playwright-aws-md5
       repo_token : SEC_TOKEN
       IF_PLAYWRIGHT: False
@@ -118,6 +117,7 @@ jobs:
        include:
          - script: https://raw.githubusercontent.com/Eloco/Script-collect/main/misc/douban_movie.py
            skype_id: 19:c941776d71c7417abf8fdb06b4160e05@thread.skype
+           gist_id : 3fd32567b6c8f6c79808905de208e59a
            skype_username : SKYPE_MINE_USERNAME
            skype_password : SKYPE_MINE_PASSWORD
            FILE_BASE: message
@@ -161,7 +161,7 @@ jobs:
         uses: sergeysova/gist-read-action@v1
         id: example-gist
         with:
-          gist_id: ${{env.gist_id}}
+          gist_id: ${{matrix.gist_id}}
           file_name: ${{matrix.script_name}}
         env:
           GITHUB_TOKEN: ${{ secrets.SEC_TOKEN }}
@@ -180,7 +180,7 @@ jobs:
         if  :  steps.gist-md5.outputs.FILE_NUM != '0'
         with:
           auth: ${{ secrets.SEC_TOKEN }}
-          gist_url: https://gist.github.com/Eloco/${{env.gist_id}}
+          gist_url: https://gist.github.com/Eloco/${{matrix.gist_id}}
           gist_title: ${{matrix.script_name}}
           gist_description: ${{matrix.script_name}}
           github_file: md5.txt
