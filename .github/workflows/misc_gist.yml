@@ -23,7 +23,7 @@ jobs:
            skype_id: 19:d32d3d93d57740308986b42ec36e5525@thread.skype
            skype_username : SKYPE_USERNAME
            skype_password : SKYPE_PASSWORD
-           FILE_BASE: msg.txt
+           FILE_BASE: msg
            IF_PLAYWRIGHT: False
            repo_name  : Eloco/action-playwright-aws-md5
            repo_token : SEC_TOKEN
@@ -53,7 +53,7 @@ jobs:
             mkdir ${{ matrix.FILE_BASE }}
             export command="bash misc_script"
             timeout 5m bash -c '$command || $command'  #retry command twice 
-            sed -i '1i [GITHUB ACTION] <misc-aws-md5>' $FILE_PATH
+            sed -i '1i [GITHUB ACTION] <misc-gist-md5>' $FILE_PATH
             cat $FILE_PATH
         env:
             MATRIX_SCRIPT: ${{matrix.script}}
@@ -90,8 +90,8 @@ jobs:
         if  :  steps.gist-md5.outputs.FILE_NUM != '0'
         with:
           auth: ${{ secrets.SEC_TOKEN }}
-          gist_url: https://gist.github.com/Eloco/cdaa298a93384460a92e051389a5d11f
-          gist_title: md5.txt
+          gist_url: https://gist.github.com/Eloco/${{matrix.gist_id}}
+          gist_title: ${{ env.GITHUB_WORKFLOW }}
           gist_description: ${{ env.GITHUB_WORKFLOW }}
           github_file: md5.txt
 
