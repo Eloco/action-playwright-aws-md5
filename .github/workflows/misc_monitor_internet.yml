@@ -27,6 +27,11 @@ jobs:
            skype_id: 19:685d8e27d15d473eb1066f8dac09dcda@thread.skype
            FILE_BASE: message
            IF_PLAYWRIGHT: True
+         - script: script/playwright_monitor_internet.py
+           script_name: playwright_monitor_internet.py
+           skype_id: 19:9b2289cb130241f49a727ec6d6cd70f7@thread.skype
+           FILE_BASE: message
+           IF_PLAYWRIGHT: True
            
     steps:
       - name: Checkout codes
