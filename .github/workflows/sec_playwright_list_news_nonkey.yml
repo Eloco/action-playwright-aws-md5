@@ -16,8 +16,8 @@ jobs:
   main:
     env:
       gist_id : 3fd32567b6c8f6c79808905de208e59a
-      FILE_BASE: message
       script_name: sec_playwright_list_news_nonkey
+      FILE_BASE: message
       IF_PLAYWRIGHT: False
     runs-on: ubuntu-latest
     steps:
