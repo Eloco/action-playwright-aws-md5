@@ -16,16 +16,23 @@ jobs:
   local-script:
     runs-on: ubuntu-latest
     env:
-      IF_AWS       : False
       IF_PLAYWRIGHT: True
       FILE_BASE: screenshot
+      gist_id : 3fd32567b6c8f6c79808905de208e59a
+      repo_name  : Eloco/action-playwright-aws-md5
+      repo_token : SEC_TOKEN
     strategy:
       matrix:
        include:
          - script: script/weather_playwright.py
+           script_name: weather_playwright
+           skype_id: 19:d32d3d93d57740308986b42ec36e5525@thread.skype
     steps:
       - name: Checkout codes
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
+        with:
+          repository: '${{ env.repo_name  }}'
+          token:      '${{ secrets[env.repo_token]  }}'
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -56,34 +63,41 @@ jobs:
         env:
             MATRIX_SCRIPT: ${{matrix.script}}
 
-      - name: aws setup
-        if: ${{ env.IF_AWS == 'True'}}
-        run: |
-            python -m pip install awscli
-            mkdir ~/.aws
-            echo "[default]" >> ~/.aws/credentials
-            echo "[default]" >> ~/.aws/config
-            echo "aws_access_key_id    = ${{ secrets.AWS_ACCESS_KEY_ID     }}" >> ~/.aws/credentials
-            echo "aws_secret_access_key= ${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
-            echo "region               = ap-east-1"                            >> ~/.aws/config
+      - name: gist-read
+        uses: sergeysova/gist-read-action@v1
+        id: example-gist
+        with:
+          gist_id: ${{env.gist_id}}
+          file_name: ${{matrix.script_name}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.SEC_TOKEN }}
 
-      - name: aws md5 check
-        if: ${{ env.IF_AWS == 'True'}}
+      - name: md5_count
         run: |
-            export action_bucket=s3://`echo ${GITHUB_REPOSITORY_OWNER}action | tr "[A-Z]" "[a-z]"`
-            export command="python aws/md5_aws.py --files_path=screenshot 2>/dev/null"
-            files_num=`timeout 5m bash -c '$command || $command || echo 0'` #retry command twice 
+            wget https://raw.githubusercontent.com/Eloco/action-playwright-aws-md5/main/script/gist_md5.py
+            echo "${{ steps.example-gist.outputs.content }}" > md5.txt
+            files_num=`python gist_md5.py --file_md5="./md5.txt" --file_dir=${{ env.FILE_BASE }}`
             echo $files_num
             echo '::set-output name=FILE_NUM::'$files_num
-        id: aws-md5
+            head md5.txt
+        id: gist-md5
+
+      - uses: popsiclestick/gist-sync-action@v1.2.0
+        if  :  steps.gist-md5.outputs.FILE_NUM != '0'
+        with:
+          auth: ${{ secrets.SEC_TOKEN }}
+          gist_url: https://gist.github.com/Eloco/${{env.gist_id}}
+          gist_title: ${{matrix.script_name}}
+          gist_description: ${{matrix.script_name}}
+          github_file: md5.txt
 
       - name: send skype
         uses: Eloco/docker-action-send-skype@v2
-        if  : steps.aws-md5.outputs.FILE_NUM != '0' || steps.aws-md5.conclusion == 'skipped' || env.IF_AWS == 'False'
+        if  : steps.gist-md5.outputs.FILE_NUM != '0'
         with:
             skype_username : ${{ secrets.SKYPE_USERNAME }}
             skype_password : ${{ secrets.SKYPE_PASSWORD }}
-            skype_ids      : 19:d32d3d93d57740308986b42ec36e5525@thread.skype
+            skype_ids      : ${{ matrix.skype_id  }} 
             send_file_path : ${{ env.FILE_BASE }}
             send_msg_path  : message.txt
 
@@ -91,19 +105,27 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FILE_BASE: message
-      IF_AWS       : False
       IF_PLAYWRIGHT: False
+      gist_id : 3fd32567b6c8f6c79808905de208e59a
+      repo_name  : Eloco/action-playwright-aws-md5
+      repo_token : SEC_TOKEN
     strategy:
       matrix:
        include:
-         - script: https://raw.githubusercontent.com/Eloco/Script-collect/main/misc/holidy.py
+         - script: https://raw.githubusercontent.com/Eloco/Script-collect/main/misc/holiday.py
+           script_name: misc_holiday
+           skype_id: 19:d32d3d93d57740308986b42ec36e5525@thread.skype
+
     steps:
       - id: random-msg-path-generator
         run: echo "::set-output name=random::$(echo ${FILE_BASE}/${RANDOM}.txt)"
         shell: bash
 
       - name: Checkout codes
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
+        with:
+          repository: '${{ env.repo_name  }}'
+          token:      '${{ secrets[env.repo_token]  }}'
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -133,7 +155,7 @@ jobs:
 
             export command="python misc_script.py"
             timeout 5m bash -c '($command || $command) >>$FILE_PATH'  #retry command twice 
-            sed -i '1i [GITHUB ACTION] <misc-aws-md5> holiday.py' $FILE_PATH
+            sed -i '1i [GITHUB ACTION] <misc-gist-md5> holiday.py' $FILE_PATH
             cat $FILE_PATH
         env:
             MATRIX_SCRIPT: ${{matrix.script}}
@@ -144,33 +166,41 @@ jobs:
         run: |
             python -m playwright install
 
-      - name: aws setup
-        if: ${{ env.IF_AWS == 'True'}}
-        run: |
-            python -m pip install awscli
-            mkdir ~/.aws
-            echo "[default]" >> ~/.aws/credentials
-            echo "[default]" >> ~/.aws/config
-            echo "aws_access_key_id    = ${{ secrets.AWS_ACCESS_KEY_ID     }}" >> ~/.aws/credentials
-            echo "aws_secret_access_key= ${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
-            echo "region               = ap-east-1"                            >> ~/.aws/config
 
-      - name: aws md5 check
-        if: ${{ env.IF_AWS == 'True'}}
+      - name: gist-read
+        uses: sergeysova/gist-read-action@v1
+        id: example-gist
+        with:
+          gist_id: ${{env.gist_id}}
+          file_name: ${{matrix.script_name}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.SEC_TOKEN }}
+  
+      - name: md5_count
         run: |
-            export action_bucket=s3://`echo ${GITHUB_REPOSITORY_OWNER}action | tr "[A-Z]" "[a-z]"`
-            export command="python aws/md5_aws.py --files_path=$FILE_BASE 2>/dev/null"
-            files_num=`timeout 5m bash -c '$command || $command || echo 0'` #retry command twice 
+            wget https://raw.githubusercontent.com/Eloco/action-playwright-aws-md5/main/script/gist_md5.py
+            echo "${{ steps.example-gist.outputs.content }}" > md5.txt
+            files_num=`python gist_md5.py --file_md5="./md5.txt" --file_dir=${{ env.FILE_BASE }}`
             echo $files_num
             echo '::set-output name=FILE_NUM::'$files_num
-        id: aws-md5
+            head md5.txt
+        id: gist-md5
+  
+      - uses: popsiclestick/gist-sync-action@v1.2.0
+        if  :  steps.gist-md5.outputs.FILE_NUM != '0'
+        with:
+          auth: ${{ secrets.SEC_TOKEN }}
+          gist_url: https://gist.github.com/Eloco/${{env.gist_id}}
+          gist_title: ${{matrix.script_name}}
+          gist_description: ${{matrix.script_name}}
+          github_file: md5.txt
 
       - name: send skype
         uses: Eloco/docker-action-send-skype@v2
-        if  : steps.aws-md5.outputs.FILE_NUM != '0' || steps.aws-md5.conclusion == 'skipped' || env.IF_AWS == 'False'
+        if  : steps.gist-md5.outputs.FILE_NUM != '0'
         with:
             skype_username : ${{ secrets.SKYPE_USERNAME }}
             skype_password : ${{ secrets.SKYPE_PASSWORD }}
-            skype_ids      : 19:d32d3d93d57740308986b42ec36e5525@thread.skype
+            skype_ids      : ${{ matrix.skype_id  }} 
             send_msg_path  : ${{ env.FILE_BASE }}
             send_file_path : none

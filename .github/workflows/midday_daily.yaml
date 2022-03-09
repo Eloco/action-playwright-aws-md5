@@ -20,13 +20,13 @@ jobs:
       gist_id : 3fd32567b6c8f6c79808905de208e59a
       repo_name  : Eloco/action-playwright-aws-md5
       repo_token : SEC_TOKEN
+      IF_PLAYWRIGHT: True
     strategy:
       matrix:
        include:
          - script: script/github_playwright.py
            script_name: github_playwright
            skype_id: 19:d32d3d93d57740308986b42ec36e5525@thread.skype
-           IF_PLAYWRIGHT: True
          - script: script/covid19CN_playwright.py
            script_name: covid19CN_playwright
            skype_id: 19:d32d3d93d57740308986b42ec36e5525@thread.skype
@@ -57,7 +57,7 @@ jobs:
             pip install -r requirements.txt
 
       - name: Install Playwright
-        if: ${{ matrix.IF_PLAYWRIGHT == 'True'}}
+        if: ${{ env.IF_PLAYWRIGHT == 'True'}}
         run: |
             python -m playwright install
 
@@ -112,6 +112,7 @@ jobs:
       gist_id : 3fd32567b6c8f6c79808905de208e59a
       repo_name  : Eloco/action-playwright-aws-md5
       repo_token : SEC_TOKEN
+      IF_PLAYWRIGHT: False
     strategy:
       matrix:
        include:
@@ -120,7 +121,6 @@ jobs:
            skype_username : SKYPE_MINE_USERNAME
            skype_password : SKYPE_MINE_PASSWORD
            FILE_BASE: message
-           IF_PLAYWRIGHT: False
            script_name: douban_movie
   
     steps:
