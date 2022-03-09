@@ -21,7 +21,7 @@ jobs:
          - script: https://raw.githubusercontent.com/Eloco/Script-collect/main/misc/weather.sh
            if_skype: True
            skype_id: 19:d32d3d93d57740308986b42ec36e5525@thread.skype
-
+           script_name: misc_gist
            skype_username : SKYPE_USERNAME
            skype_password : SKYPE_PASSWORD
            FILE_BASE: msg
@@ -73,7 +73,7 @@ jobs:
         id: example-gist
         with:
           gist_id: ${{matrix.gist_id}}
-          file_name: misc_gist
+          file_name: ${{matrix.script_name}}
         env:
           GITHUB_TOKEN: ${{ secrets.SEC_TOKEN }}
 
@@ -92,8 +92,8 @@ jobs:
         with:
           auth: ${{ secrets.SEC_TOKEN }}
           gist_url: https://gist.github.com/Eloco/${{matrix.gist_id}}
-          gist_title: misc_gist
-          gist_description: misc_gist
+          gist_title: ${{matrix.script_name}}
+          gist_description: ${{matrix.script_name}}
           github_file: md5.txt
 
       - name: send skype
