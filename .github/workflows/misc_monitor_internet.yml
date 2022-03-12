@@ -10,7 +10,7 @@ on:
         tags:
           description: 'action'  
   schedule:
-    - cron:  '*/20 * * * *'
+    - cron:  '*/15 * * * *'
 
 jobs:
   shell:
@@ -32,6 +32,11 @@ jobs:
            skype_id: 19:9b2289cb130241f49a727ec6d6cd70f7@thread.skype
            FILE_BASE: message
            IF_PLAYWRIGHT: True
+         - script: script/rss/rss_monitor.py
+           script_name: rss_monitor.py
+           skype_id: 19:842c94638f7543839cecd1ad75ed4dae@thread.skype
+           FILE_BASE: message
+           IF_PLAYWRIGHT: False
            
     steps:
       - name: Checkout codes
@@ -47,7 +52,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-            find * -type f | grep -v "${{ matrix.script  }}" | xargs rm
+            find * -name '*.py' | grep -v "${{ matrix.script  }}" | xargs rm
             python -m pip install --upgrade pip
             pip install pipreqs
             pip install fire

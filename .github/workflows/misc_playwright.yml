@@ -57,7 +57,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-            find * -type f | grep -v "${{ matrix.script  }}" | xargs rm
+            find * -name '*.py' | grep -v "${{ matrix.script  }}" | xargs rm
             python -m pip install --upgrade pip
             pip install pipreqs
             pip install fire
