@@ -71,6 +71,7 @@ jobs:
         run: |
             export command="python ${{ matrix.script  }} 2>/dev/null"
             $command || $command  #retry command twice 
+            ls -l screenshot 2> /dev/null
 
       - name: gist-read
         uses: sergeysova/gist-read-action@v1
