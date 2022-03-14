@@ -15,12 +15,28 @@ on:
 jobs:
   main:
     runs-on: ubuntu-latest
+    env:
+      gist_id : 3fd32567b6c8f6c79808905de208e59a
+      repo_name  : Eloco/Sec-action-playwright-aws-md5
+      repo_token : SEC_TOKEN
+    strategy:
+      matrix:
+       include:
+         - script: script/playwright_zcssr.py
+           script_name: playwright_zcssr.py
+           skype_id: 19:5a8aeaf6a918417a8b9396982180afd0@thread.skype
+           IF_PLAYWRIGHT: True
+         - script: script/playwright_zcssr.py
+           script_name: playwright_leshu.py
+           skype_id: 
+           IF_PLAYWRIGHT: True
+
     steps:
       - name: Checkout codes
         uses: actions/checkout@v2
         with:
-          repository: 'Eloco/Sec-action-playwright-aws-md5'
-          token: '${{ secrets.SEC_TOKEN     }}'
+          repository: '${{ env.repo_name  }}'
+          token:      '${{ secrets[env.repo_token]  }}'
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -34,44 +50,63 @@ jobs:
 
       - name: Install dependencies
         run: |
+            find * -name '*.py' | grep -v "${{ matrix.script  }}" | xargs rm
             python -m pip install --upgrade pip
             pip install pipreqs
+            pip install fire
             pipreqs .
             pip install -r requirements.txt
+        env:
+            MATRIX_SCRIPT: ${{matrix.script}}
+
+      - name: Install Playwright
+        if: ${{ env.IF_PLAYWRIGHT  == 'True'}}
+        run: |
+            pip install playwright
             python -m playwright install
+        env:
+            IF_PLAYWRIGHT: ${{ matrix.IF_PLAYWRIGHT }}
 
       - name: run python downloader
         run: |
-            export command="python script/playwright_zcssr.py 2>/dev/null"
+            export command="python ${{ matrix.script  }} 2>/dev/null"
             $command || $command  #retry command twice 
 
-      - name: aws setup
-        run: |
-            python -m pip install awscli
-            mkdir ~/.aws
-            echo "[default]" >> ~/.aws/credentials
-            echo "[default]" >> ~/.aws/config
-            echo "aws_access_key_id    = ${{ secrets.AWS_ACCESS_KEY_ID     }}" >> ~/.aws/credentials
-            echo "aws_secret_access_key= ${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
-            echo "region               = ap-east-1"                            >> ~/.aws/config
-
-      - name: aws md5 check
-        if: ${{ env.IF_AWS == 'True'}}
-        run: |
-            export action_bucket=s3://`echo ${GITHUB_REPOSITORY_OWNER}action | tr "[A-Z]" "[a-z]"`
-            export command="python aws/md5_aws.py --files_path=screenshot 2>/dev/null"
-            files_num=`$command || $command || echo 0` #retry command twice 
-            echo '::set-output name=FILE_NUM::'$files_num
-        id: aws-md5
+      - name: gist-read
+        uses: sergeysova/gist-read-action@v1
+        id: example-gist
+        continue-on-error: true
+        with:
+          gist_id: ${{env.gist_id}}
+          file_name: ${{matrix.script_name}}
         env:
-          IF_AWS: False
+          GITHUB_TOKEN: ${{ secrets.SEC_TOKEN }}
+
+      - name: md5_count
+        run: |
+            wget https://raw.githubusercontent.com/Eloco/action-playwright-aws-md5/main/script/gist_md5.py
+            echo "${{ steps.example-gist.outputs.content }}" > md5.txt || echo "first init" > md5.txt 
+            files_num=`python gist_md5.py --file_md5="./md5.txt" --file_dir=${{ matrix.FILE_BASE }}`
+            echo $files_num
+            echo '::set-output name=FILE_NUM::'$files_num
+            head md5.txt
+        id: gist-md5
+
+      - uses: popsiclestick/gist-sync-action@v1.2.0
+        if  :  steps.gist-md5.outputs.FILE_NUM != '0'
+        with:
+          auth: ${{ secrets.SEC_TOKEN }}
+          gist_url: https://gist.github.com/Eloco/${{env.gist_id}}
+          gist_title: ${{matrix.script_name}}
+          gist_description: ${{matrix.script_name}}
+          github_file: md5.txt
 
       - name: send skype
         uses: Eloco/docker-action-send-skype@v2
-        if  : steps.aws-md5.outputs.FILE_NUM != '0' || steps.aws-md5.conclusion == 'skipped'
+        if  : steps.gist-md5.outputs.FILE_NUM != '0'
         with:
             skype_username : ${{ secrets.SKYPE_MINE_USERNAME }}
             skype_password : ${{ secrets.SKYPE_MINE_PASSWORD }}
-            skype_ids      : 19:5a8aeaf6a918417a8b9396982180afd0@thread.skype
+            skype_ids      : ${{ matrix.skype_id  }}
             send_msg_path  : message.txt 
             send_file_path : screenshot
