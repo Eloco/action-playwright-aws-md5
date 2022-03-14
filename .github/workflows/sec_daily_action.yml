@@ -28,7 +28,7 @@ jobs:
            IF_PLAYWRIGHT: True
          - script: script/playwright_leshu.py
            script_name: playwright_leshu.py
-           skype_id: 
+           skype_id: 19:5a8aeaf6a918417a8b9396982180afd0@thread.skype
            IF_PLAYWRIGHT: True
 
     steps:
