@@ -107,5 +107,4 @@ jobs:
             skype_username : ${{ secrets.SKYPE_MINE_USERNAME }}
             skype_password : ${{ secrets.SKYPE_MINE_PASSWORD }}
             skype_ids      : ${{ matrix.skype_id  }}
-            send_msg_path  : message.txt 
             send_file_path : screenshot
