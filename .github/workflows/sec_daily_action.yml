@@ -30,6 +30,10 @@ jobs:
            script_name: playwright_leshu.py
            skype_id: 19:5a8aeaf6a918417a8b9396982180afd0@thread.skype
            IF_PLAYWRIGHT: True
+         - script: script/playwright_leshu_2.py
+           script_name: playwright_leshu_2.py
+           skype_id: 19:5a8aeaf6a918417a8b9396982180afd0@thread.skype
+           IF_PLAYWRIGHT: True
 
     steps:
       - name: Checkout codes
