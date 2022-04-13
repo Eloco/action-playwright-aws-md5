@@ -24,12 +24,12 @@ jobs:
     strategy:
       matrix:
        include:
-         - mail_user: WORK_OUTLOOK_USER
-           mail_pass: WORK_OUTLOOK_KEY
-           mail_server: 'outlook.office365.com'
-           mail_box: 'INBOX'
-           script_name: work_outlook
-           send_skype_ids: '19:b690a79c04204eb49af0d745893a2d95@thread.skype'
+         #- mail_user: WORK_OUTLOOK_USER
+         #  mail_pass: WORK_OUTLOOK_KEY
+         #  mail_server: 'outlook.office365.com'
+         #  mail_box: 'INBOX'
+         #  script_name: work_outlook
+         #  send_skype_ids: '19:b690a79c04204eb49af0d745893a2d95@thread.skype'
          - mail_user: MINE_GMAIL_USER
            mail_pass: MINE_GMAIL_KEY
            mail_server: 'imap.gmail.com'
