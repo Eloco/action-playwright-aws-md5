@@ -49,7 +49,7 @@ jobs:
            IF_PLAYWRIGHT: False
          - script: script/rss/highfreq_monitor.py
            script_name: highfreq_monitor.py
-           skype_id: 19:84a74dce67f241b189c5a657828d57d8@thread.skype
+           skype_id: 19:9221880a6d3c4274b7256deff420629c@thread.skype@thread.skype
            FILE_BASE: message
            IF_PLAYWRIGHT: False
            
