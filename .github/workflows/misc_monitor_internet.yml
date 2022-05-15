@@ -42,6 +42,11 @@ jobs:
            skype_id: 19:4aed64355c2e4d409906c2a8946c7ec2@thread.skype
            FILE_BASE: message
            IF_PLAYWRIGHT: False
+         - script: script/rss/animerss_monitor.py
+           script_name: animerss_monitor.py
+           skype_id: 19:84a74dce67f241b189c5a657828d57d8@thread.skype
+           FILE_BASE: message
+           IF_PLAYWRIGHT: False
            
     steps:
       - name: Checkout codes
