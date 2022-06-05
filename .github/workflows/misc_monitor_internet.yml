@@ -52,6 +52,11 @@ jobs:
            skype_id: 19:9221880a6d3c4274b7256deff420629c@thread.skype
            FILE_BASE: message
            IF_PLAYWRIGHT: False
+         - script: script/rss/lowfreq_monitor.py
+           script_name: lowfreq_monitor.py
+           skype_id: 19:1aff469494654be8a854f36cbb68d7ec@thread.skype
+           FILE_BASE: message
+           IF_PLAYWRIGHT: False
            
     steps:
       - name: Checkout codes
