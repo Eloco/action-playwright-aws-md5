@@ -100,6 +100,7 @@ jobs:
           github_file: md5.txt
 
       - name: send skype
+        continue-on-error: true
         uses: Eloco/docker-action-send-skype@v2
         if  : steps.gist-md5.outputs.FILE_NUM != '0'
         with:

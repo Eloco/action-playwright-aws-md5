@@ -49,6 +49,7 @@ jobs:
             echo "[$action_bucket] just get cleaned!!" >> message.txt
 
       - name: send skype
+        continue-on-error: true
         uses: Eloco/docker-action-send-skype@v2
         with:
             skype_username : ${{ secrets.SKYPE_MINE_USERNAME }}

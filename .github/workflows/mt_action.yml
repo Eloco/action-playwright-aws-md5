@@ -50,6 +50,7 @@ jobs:
           #python script/mt-action-scripts.py $webhook $wm_latitude $wm_longitude $token $propId $exchangeCoinNumber $serverkey $pushPlusToken $yesornot $yesornot2 $on $setexchangedou &> message
 
       - name: send skype
+        continue-on-error: true
         uses: Eloco/docker-action-send-skype@v2
         with:
             skype_username : ${{ secrets.SKYPE_MINE_USERNAME }}
