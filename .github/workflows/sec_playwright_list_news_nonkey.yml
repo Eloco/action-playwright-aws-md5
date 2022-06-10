@@ -83,8 +83,8 @@ jobs:
         uses: Eloco/docker-action-send-skype@v2
         if  : steps.gist-md5.outputs.FILE_NUM != '0'
         with:
-            skype_username : ${{ secrets.SKYPE_ME_USERNAME }}
-            skype_password : ${{ secrets.SKYPE_ME_PASSWORD }}
+            skype_username : ${{ secrets.SKYPE_KEY_USERNAME }}
+            skype_password : ${{ secrets.SKYPE_KEY_PASSWORD }}
             skype_ids      : 19:685d8e27d15d473eb1066f8dac09dcda@thread.skype
             send_msg_path  : ${{ env.FILE_BASE }}
             send_file_path : none
