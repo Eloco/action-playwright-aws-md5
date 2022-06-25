@@ -20,9 +20,8 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: run scale
         run: |
-        fly scale count 0 -a ${{ matrix.fly }}
-        sleep 10
-        fly scale count 1 -a ${{ matrix.fly }}
+            flyctl scale count 0 -a ${{ matrix.fly }}
+            sleep 10
+            flyctl scale count 1 -a ${{ matrix.fly }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-
