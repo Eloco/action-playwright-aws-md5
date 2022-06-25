@@ -18,7 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: |
+      - name: run scale
+        run: |
         fly scale count 0 -a ${{ matrix.fly }}
         sleep 10
         fly scale count 1 -a ${{ matrix.fly }}
