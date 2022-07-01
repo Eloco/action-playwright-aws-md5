@@ -12,9 +12,9 @@ jobs:
       matrix:
        include:
          - fly: eloco-frp
-         - fly: eloco-frp-udp
+        #- fly: eloco-frp-udp
          - fly: eloco-dns
-         - fly: eloco-n2n
+        #- fly: eloco-n2n
     steps:
       - uses: actions/checkout@v2
       - uses: superfly/flyctl-actions/setup-flyctl@master
