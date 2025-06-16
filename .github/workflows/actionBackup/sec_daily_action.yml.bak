@@ -1,0 +1,112 @@
+name: 'schedule_sec_daily'
+
+on:
+  workflow_dispatch:
+    inputs:
+        ignore_md5:
+          description: 'if ignore md5 filter'  
+          required: true
+          default: 'true'
+  schedule:
+    - cron:  '00 04 * * *'
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    env:
+      gist_id : 3fd32567b6c8f6c79808905de208e59a
+      repo_name  : Eloco/Sec-action-playwright-aws-md5
+      repo_token : SEC_TOKEN
+    strategy:
+      matrix:
+       include:
+         - script: script/playwright_zcssr.py
+           script_name: playwright_zcssr.py
+           slack_hook: B043QSQU1KN/7tCNfBCulGhPi5VqDAWiVkIa #msg-daily
+           IF_PLAYWRIGHT: True
+           FILE_BASE:   screenshot
+         - script: script/playwright_iamtxt.py
+           script_name: playwright_iamtxt.py
+           slack_hook: B043QSQU1KN/7tCNfBCulGhPi5VqDAWiVkIa #msg-daily
+           IF_PLAYWRIGHT: screenshot        # - script: script/playwright_leshu.py
+        #   script_name: playwright_leshu.py
+        #   skype_id: 19:5a8aeaf6a918417a8b9396982180afd0@thread.skype
+        #   IF_PLAYWRIGHT: True
+        # - script: script/playwright_leshu_2.py
+        #   script_name: playwright_leshu_2.py
+        #   skype_id: 19:5a8aeaf6a918417a8b9396982180afd0@thread.skype
+        #   IF_PLAYWRIGHT: True
+           
+    steps:
+      - name: Checkout codes
+        uses: actions/checkout@v2
+        with:
+          repository: '${{ env.repo_name  }}'
+          token:      '${{ secrets[env.repo_token]  }}'
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+            find * -name '*.py' | grep -v "${{ matrix.script  }}" | xargs rm
+            python -m pip install --upgrade pip
+            pip install pipreqs
+            pip install fire
+            pipreqs .
+            pip install -r requirements.txt
+        env:
+            MATRIX_SCRIPT: ${{matrix.script}}
+
+      - name: Install Playwright
+        if: ${{ env.IF_PLAYWRIGHT  == 'True'}}
+        run: |
+            pip install playwright
+            python -m playwright install
+        env:
+            IF_PLAYWRIGHT: ${{ matrix.IF_PLAYWRIGHT }}
+
+      - name: run python downloader
+        run: |
+            export command="python ${{ matrix.script  }} 2>/dev/null"
+            $command || $command  #retry command twice 
+
+      - name: gist-read
+        if  :  env.ignore_md5 != 'true'
+        uses: sergeysova/gist-read-action@v1
+        id: example-gist
+        continue-on-error: true
+        with:
+          gist_id: ${{env.gist_id}}
+          file_name: ${{matrix.script_name}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.SEC_TOKEN }}
+
+      - name: md5_count
+        if  :  env.ignore_md5 != 'true'
+        run: |
+            wget https://raw.githubusercontent.com/Eloco/action-playwright-aws-md5/main/script/gist_md5.py
+            echo "${{ steps.example-gist.outputs.content }}" > md5.txt || echo "first init" > md5.txt 
+            files_num=`python gist_md5.py --file_md5="./md5.txt" --file_dir=${{ matrix.FILE_BASE }}`
+            echo $files_num
+            echo '::set-output name=FILE_NUM::'$files_num
+            head md5.txt
+        id: gist-md5
+
+      - uses: popsiclestick/gist-sync-action@v1.2.0
+        if  :  steps.gist-md5.outputs.FILE_NUM != '0' && env.ignore_md5 != 'true'
+        with:
+          auth: ${{ secrets.SEC_TOKEN }}
+          gist_url: https://gist.github.com/Eloco/${{env.gist_id}}
+          gist_title: ${{matrix.script_name}}
+          gist_description: ${{matrix.script_name}}
+          github_file: md5.txt
+
+      - name: send slack
+        continue-on-error: true
+        if  : steps.gist-md5.outputs.FILE_NUM != '0' || env.ignore_md5 == 'true'
+        run: |
+            wget https://raw.githubusercontent.com/Eloco/action-playwright-aws-md5/main/script/slack_sendMsg.py -O sendMsg.py
+            filePath=${{ matrix.FILE_BASE }} Hook="${{ matrix.slack_hook  }}" secHook=${{ secrets.SLACK_1 }} python sendMsg.py
