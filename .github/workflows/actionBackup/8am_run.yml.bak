@@ -1,0 +1,56 @@
+name: '8am run'
+
+on:
+  #schedule:
+  #- cron: '0 0 * * *' # every day
+  workflow_dispatch:
+
+
+jobs:
+  shell:
+    runs-on: ubuntu-latest
+    env:
+      gist_id : 3fd32567b6c8f6c79808905de208e59a
+      repo_name  : Eloco/Sec-action-playwright-aws-md5
+      repo_token : SEC_TOKEN
+    strategy:
+      matrix:
+       include:
+         - script: script/okteto_wake.py
+           script_name: okteto_wake.py
+           IF_PLAYWRIGHT: False
+           
+    steps:
+      - name: Checkout codes
+        uses: actions/checkout@v2
+        with:
+          repository: '${{ env.repo_name  }}'
+          token:      '${{ secrets[env.repo_token]  }}'
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+            find * -name '*.py' | grep -v "${{ matrix.script  }}" | xargs rm
+            python -m pip install --upgrade pip
+            pip install pipreqs
+            pipreqs .
+            pip install -r requirements.txt
+        env:
+            MATRIX_SCRIPT: ${{matrix.script}}
+
+      - name: Install Playwright
+        if: ${{ env.IF_PLAYWRIGHT  == 'True'}}
+        run: |
+            pip install playwright
+            python -m playwright install
+        env:
+            IF_PLAYWRIGHT: ${{ matrix.IF_PLAYWRIGHT }}
+
+      - name: run python downloader
+        run: |
+            export command="python ${{ matrix.script  }} 2>/dev/null"
+            $command || $command  #retry command twice 
