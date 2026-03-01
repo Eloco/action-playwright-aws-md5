@@ -1,0 +1,83 @@
+name: 'sec_bili_daily'
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron:  '00 01 * * *'
+
+jobs:
+  main_1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout codes
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: set cn-lang
+        run: |
+            sudo apt-get install fonts-wqy-zenhei
+        continue-on-error: true
+
+      - name: run jar
+        run: |
+            wget https://raw.githubusercontent.com/Eloco/Script-collect/main/BILIBILI-HELPER-PRE/BILIBILI-HELPER-stable.jar           --output-document BILIBILI-HELPER.jar
+            wget https://raw.githubusercontent.com/Eloco/Script-collect/main/BILIBILI-HELPER-PRE/BILIBILI-HELPER-setup.sh             --output-document setup.sh
+            chmod +x  BILIBILI-HELPER.jar
+            chmod +x  setup.sh
+            export SESSDATA=${{secrets.BILI_SESSDATA}}
+            export DEDEUSERID=${{secrets.BILI_DEDEUSERID}}
+            export BILI_JCT=${{secrets.BILI_JCT}}
+            export SCKEY=${{secrets.SCKEY}}
+            timeout 300 bash setup.sh
+
+      - name: send skype
+        continue-on-error: true
+        uses: Eloco/docker-action-send-skype@v2
+        with:
+            skype_username : ${{ secrets.SKYPE_MINE_USERNAME }}
+            skype_password : ${{ secrets.SKYPE_MINE_PASSWORD }}
+            skype_ids      : 19:5a8aeaf6a918417a8b9396982180afd0@thread.skype
+            send_msg_path  : message 
+            send_file_path : screenshot
+
+  main_2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout codes
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: set cn-lang
+        run: |
+            sudo apt-get install fonts-wqy-zenhei
+        continue-on-error: true
+
+      - name: run jar
+        run: |
+            wget https://raw.githubusercontent.com/Eloco/Script-collect/main/BILIBILI-HELPER-PRE/bilibili-match-prediction-stable.jar  --output-document BILIBILI-HELPER.jar
+            wget https://raw.githubusercontent.com/Eloco/Script-collect/main/BILIBILI-HELPER-PRE/BILIBILI-HELPER-setup.sh              --output-document setup.sh
+            wget https://raw.githubusercontent.com/Eloco/Script-collect/main/BILIBILI-HELPER-PRE/bilibili-match-prediction-config.json --output-document config.json
+            chmod +x  BILIBILI-HELPER.jar
+            chmod +x  setup.sh
+            export SESSDATA=${{secrets.BILI_SESSDATA}}
+            export DEDEUSERID=${{secrets.BILI_DEDEUSERID}}
+            export BILI_JCT=${{secrets.BILI_JCT}}
+            export SCKEY=${{secrets.SCKEY}}
+            timeout 300 bash setup.sh
+
+      #- name: send skype
+      #  uses: Eloco/docker-action-send-skype@v2
+      #  with:
+      #      skype_username : ${{ secrets.SKYPE_MINE_USERNAME }}
+      #      skype_password : ${{ secrets.SKYPE_MINE_PASSWORD }}
+      #      skype_ids      : 19:5a8aeaf6a918417a8b9396982180afd0@thread.skype
+      #      send_msg_path  : message 
+      #      send_file_path : screenshot

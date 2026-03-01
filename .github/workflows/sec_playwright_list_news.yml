@@ -1,0 +1,93 @@
+name: 'sec_playwright_list_news'
+
+on:
+  workflow_dispatch:
+    inputs:
+        ignore_md5:
+          description: 'if ignore md5 filter'  
+          required: true
+          default: 'false'
+  schedule:
+    - cron:  '00 */2 * * *'
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    env:
+      gist_id : 3fd32567b6c8f6c79808905de208e59a
+      repo_name  : Eloco/Sec-action-playwright-aws-md5
+      ignore_md5: ${{ github.event.inputs.ignore_md5 }}
+      repo_token : SEC_TOKEN
+    strategy:
+      matrix:
+       include:
+         - script: script/playwright_list_news.py
+           script_name: playwright_list_news.py
+           slack_hook: B044BGJBF16/Fr2O4oTkaiIm1v1P8KroBy77 #msg-key
+           FILE_BASE: message
+           IF_PLAYWRIGHT: True
+
+    steps:
+      - name: Checkout codes
+        uses: actions/checkout@v3
+        with:
+          repository: '${{ env.repo_name  }}'
+          token:      '${{ secrets[env.repo_token]  }}'
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+            find * -name '*.py' | grep -v "${{ matrix.script  }}" | xargs rm
+            python -m pip install --upgrade pip
+            pip install pipreqs
+            pip install fire
+            pipreqs .
+            pip install -r requirements.txt
+        env:
+            MATRIX_SCRIPT: ${{matrix.script}}
+
+      - name: Install Playwright
+        if: ${{ env.IF_PLAYWRIGHT  == 'True'}}
+        run: |
+            pip install playwright
+            python -m playwright install
+        env:
+            IF_PLAYWRIGHT: ${{ matrix.IF_PLAYWRIGHT }}
+
+      - name: run python downloader
+        run: |
+            export command="python ${{ matrix.script  }} 2>/dev/null"
+            $command || $command  #retry command twice 
+
+      - name: md5_count
+        if  :  env.ignore_md5 != 'true'
+        run: |
+            wget https://raw.githubusercontent.com/Eloco/action-playwright-aws-md5/main/script/gist_md5.py
+            wget https://gist.githubusercontent.com/Eloco/${{env.gist_id}}/raw/${{matrix.script_name}} -O md5.txt || echo "first init" > md5.txt 
+            files_num=`python gist_md5.py --file_md5="./md5.txt" --file_dir=${{ matrix.FILE_BASE }}`
+            echo $files_num
+            echo 'FILE_NUM=${files_num}' >> ${GITHUB_OUTPUT}
+            wc -l md5.txt
+        id: gist-md5
+
+      - name: gist-sync
+        if  :  steps.gist-md5.outputs.FILE_NUM != '0' && env.ignore_md5 != 'true'
+        uses: exuanbo/actions-deploy-gist@v1
+        continue-on-error: true
+        with:
+          token: ${{ secrets.SEC_TOKEN }}
+          gist_id: ${{env.gist_id}}
+          gist_file_name: ${{matrix.script_name}}
+          gist_description: ${{matrix.script_name}}
+          file_path: md5.txt
+
+      - name: send slack
+        continue-on-error: true
+        if  : steps.gist-md5.outputs.FILE_NUM != '0' || env.ignore_md5 == 'true'
+        run: |
+            wget https://raw.githubusercontent.com/Eloco/action-playwright-aws-md5/main/script/slack_sendMsg.py -O sendMsg.py
+            msgPath=${{ matrix.FILE_BASE }} Hook="${{ matrix.slack_hook  }}" secHook=${{ secrets.SLACK_1 }} python sendMsg.py

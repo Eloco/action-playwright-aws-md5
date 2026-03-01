@@ -1,0 +1,33 @@
+name: 'schedule_sec_misc'
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron:  '00 22 * * *'
+
+jobs:
+  count_day:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout codes
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+
+      - name: run misc_1
+        run: |
+            mkdir message
+            wget https://raw.githubusercontent.com/Eloco/Script-collect/main/misc/count_day.py
+            echo "[GITHUB ACTION] misc_1" >> message/1.txt
+            python count_day.py           >> message/1.txt
+
+      - name: send slack
+        continue-on-error: true
+        run: |
+            python -m pip install requests
+            wget https://raw.githubusercontent.com/Eloco/action-playwright-aws-md5/main/script/slack_sendMsg.py -O sendMsg.py
+            msgPath=message Hook="B043QSQU1KN/7tCNfBCulGhPi5VqDAWiVkIa" secHook=${{ secrets.SLACK_1 }} python sendMsg.py

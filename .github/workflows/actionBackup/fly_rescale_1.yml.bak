@@ -1,0 +1,25 @@
+name: 'fly_rescale_1'
+
+on:
+  schedule:
+  - cron: '0 20 * * *' # every day
+  workflow_dispatch:
+jobs:
+  rescale:
+    name: rescale fly
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+       include:
+         - fly: eloco-supernode
+         - fly: eloco-ssh
+    steps:
+      - uses: actions/checkout@v2
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: run scale
+        run: |
+            flyctl scale count 0 -a ${{ matrix.fly }}
+            sleep 30
+            flyctl scale count 1 -a ${{ matrix.fly }}
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN_1 }}

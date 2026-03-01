@@ -1,0 +1,107 @@
+name: 'schedule_sec_daily'
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron:  '00 04 * * *'
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    env:
+      gist_id : 3fd32567b6c8f6c79808905de208e59a
+      repo_name  : Eloco/Sec-action-playwright-aws-md5
+      repo_token : SEC_TOKEN
+    strategy:
+      matrix:
+       include:
+         - script: script/playwright_zcssr.py
+           script_name: playwright_zcssr.py
+           skype_id: 19:5a8aeaf6a918417a8b9396982180afd0@thread.skype
+           IF_PLAYWRIGHT: True
+         - script: script/playwright_iamtxt.py
+           script_name: playwright_iamtxt.py
+           skype_id: 19:5a8aeaf6a918417a8b9396982180afd0@thread.skype
+           IF_PLAYWRIGHT: True
+        # - script: script/playwright_leshu.py
+        #   script_name: playwright_leshu.py
+        #   skype_id: 19:5a8aeaf6a918417a8b9396982180afd0@thread.skype
+        #   IF_PLAYWRIGHT: True
+        # - script: script/playwright_leshu_2.py
+        #   script_name: playwright_leshu_2.py
+        #   skype_id: 19:5a8aeaf6a918417a8b9396982180afd0@thread.skype
+        #   IF_PLAYWRIGHT: True
+
+    steps:
+      - name: Checkout codes
+        uses: actions/checkout@v3
+        with:
+          repository: '${{ env.repo_name  }}'
+          token:      '${{ secrets[env.repo_token]  }}'
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: set cn-lang
+        run: |
+            sudo apt-get install fonts-wqy-zenhei
+        continue-on-error: true
+
+      - name: Install dependencies
+        run: |
+            find * -name '*.py' | grep -v "${{ matrix.script  }}" | xargs rm
+            python -m pip install --upgrade pip
+            pip install pipreqs
+            pip install fire
+            pipreqs .
+            pip install -r requirements.txt
+        env:
+            MATRIX_SCRIPT: ${{matrix.script}}
+
+      - name: Install Playwright
+        if: ${{ env.IF_PLAYWRIGHT  == 'True'}}
+        run: |
+            pip install playwright
+            python -m playwright install
+        env:
+            IF_PLAYWRIGHT: ${{ matrix.IF_PLAYWRIGHT }}
+
+      - name: run python downloader
+        run: |
+            export command="python ${{ matrix.script  }} 2>/dev/null"
+            $command || $command  #retry command twice 
+            ls -l screenshot 2> /dev/null
+
+      - name: md5_count
+        if  :  env.ignore_md5 != 'true'
+        run: |
+            wget https://raw.githubusercontent.com/Eloco/action-playwright-aws-md5/main/script/gist_md5.py
+            wget https://gist.githubusercontent.com/Eloco/${{env.gist_id}}/raw/${{matrix.script_name}} -O md5.txt || echo "first init" > md5.txt 
+            files_num=`python gist_md5.py --file_md5="./md5.txt" --file_dir=${{ matrix.FILE_BASE }}`
+            echo $files_num
+            echo 'FILE_NUM=${files_num}' >> ${GITHUB_OUTPUT}
+            wc -l md5.txt
+        id: gist-md5
+
+      - name: gist-sync
+        if  :  steps.gist-md5.outputs.FILE_NUM != '0' && env.ignore_md5 != 'true'
+        uses: exuanbo/actions-deploy-gist@v1
+        continue-on-error: true
+        with:
+          token: ${{ secrets.SEC_TOKEN }}
+          gist_id: ${{env.gist_id}}
+          gist_file_name: ${{matrix.script_name}}
+          gist_description: ${{matrix.script_name}}
+          file_path: md5.txt
+
+      - name: send skype
+        continue-on-error: true
+        uses: Eloco/docker-action-send-skype@v2
+        with:
+            skype_username : ${{ secrets.SKYPE_MINE_USERNAME }}
+            skype_password : ${{ secrets.SKYPE_MINE_PASSWORD }}
+            skype_ids      : ${{ matrix.skype_id  }}
+            send_file_path : screenshot
+
